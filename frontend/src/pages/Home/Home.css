@@ -1,0 +1,71 @@
+/* PAGE BACKGROUND */
+.home-page {
+  background-color: #1d426d; /* Dark blue like screenshot */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px; /* Space for navbar */
+}
+
+/* MAP CARD */
+.map-container {
+  width: 90%;
+  max-width: 400px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.map-container img {
+  width: 100%;
+  display: block;
+}
+
+/* SEARCH BAR */
+.search-bar {
+  margin-top: 16px;
+  width: 90%;
+  max-width: 400px;
+  background: #0e243d;
+  border-radius: 40px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  gap: 10px;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 16px;
+}
+
+.search-icon,
+.mic-icon {
+  font-size: 20px;
+  color: #fddc5c; /* Yellow to match logo theme */
+}
+
+/* BOTTOM FOOTER NAV */
+.footer-nav {
+  margin-top: auto;
+  width: 100%;
+  background-color: #1d426d;
+  padding: 14px 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 2px solid #0e243d;
+}
+
+.footer-nav i {
+  font-size: 24px;
+  color: #fddc5c; /* Yellow icons like screenshot */
+}

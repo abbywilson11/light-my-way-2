@@ -1,0 +1,57 @@
+.footer {
+  background-color: #d3f0ec; /* soft teal background */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+  flex-wrap: wrap;
+}
+
+/* Left section (logo + name) */
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Center section (buttons) */
+.footer-center {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-center button {
+  background-color: #009688; /* teal green */
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.footer-center button:hover {
+  background-color: #00796b; /* darker teal on hover */
+}
+
+/* Right section (language + login) */
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .footer-center {
+    flex-wrap: wrap;
+  }
+}
