@@ -8,14 +8,24 @@
   padding-top: 80px; /* Space for navbar */
 }
 
-/* MAP CARD */
+/* =========================
+   MAP WRAPPER + CARD
+   ========================= */
+.map-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
 .map-container {
   width: 90%;
   max-width: 400px;
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
 .map-container img {
@@ -23,19 +33,97 @@
   display: block;
 }
 
-/* SEARCH BAR */
+/* Badges "Fastest / Balanced / Most Lit" sur la carte */
+.map-badge {
+  position: absolute;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.map-badge--fastest {
+  bottom: 80px;
+  left: 40px;
+  background: #1d7cf2;
+}
+
+.map-badge--balanced {
+  top: 90px;
+  right: 80px;
+  background: #c29b2e;
+}
+
+.map-badge--mostlit {
+  bottom: 40px;
+  right: 40px;
+  background: #12263c;
+}
+
+/* mis en avant quand la route est sélectionnée */
+.map-badge--active {
+  box-shadow: 0 0 0 3px rgba(253, 220, 92, 0.9);
+  transform: scale(1.05);
+}
+
+/* Bandeau en bas de la carte : route sélectionnée */
+.map-selected-banner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 36, 61, 0.95);
+  color: #fddc5c;
+  padding: 6px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.map-selected-label {
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.map-selected-value {
+  font-weight: 700;
+}
+
+.map-selected-extra {
+  color: white;
+  margin-left: 4px;
+}
+
+/* =========================
+   SEARCH BAR – From / To
+   ========================= */
 .search-bar {
   margin-top: 16px;
   width: 90%;
   max-width: 400px;
   background: #0e243d;
-  border-radius: 40px;
+  border-radius: 24px;
   padding: 10px 16px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
   color: white;
-  font-size: 18px;
-  gap: 10px;
+  font-size: 16px;
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-label {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.9;
+  min-width: 42px; /* pour aligner From / To */
 }
 
 .search-bar input {
@@ -44,16 +132,140 @@
   border: none;
   outline: none;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
 }
 
+.search-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.go-button {
+  background: #fddc5c;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #0e243d;
+  font-weight: 700;
+}
+
+.go-button:hover {
+  opacity: 0.9;
+}
+
+/* (Garde ces classes si Abby les utilisait déjà pour des icônes) */
 .search-icon,
 .mic-icon {
   font-size: 20px;
   color: #fddc5c; /* Yellow to match logo theme */
 }
 
-/* BOTTOM FOOTER NAV */
+/* =========================
+   DIRECTIONS + ROUTE CARDS
+   ========================= */
+.directions-section {
+  margin-top: 16px;
+  width: 90%;
+  max-width: 400px;
+  color: white;
+}
+
+.directions-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+/* Liste de cartes */
+.route-card {
+  background: white;
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  color: #0e243d;
+}
+
+.route-card--balanced {
+  background: #c49c2f; /* doré comme sur la maquette */
+  color: #0e243d;
+}
+
+.route-card--fastest {
+  background: #ffffff;
+}
+
+.route-card--most-lit {
+  background: #12263c;
+  color: #fddc5c;
+}
+
+/* bordure verte quand la route est sélectionnée */
+.route-card--selected {
+  border: 2px solid #36b166;
+}
+
+/* Header de la carte : titre + bouton GO */
+.route-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.route-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.route-subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* bouton GO dans la carte */
+.route-go-btn {
+  background: #36b166;
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.route-go-btn:hover {
+  opacity: 0.9;
+}
+
+.route-details {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.route-details p {
+  margin: 2px 0;
+}
+
+.route-status {
+  font-size: 13px;
+}
+
+.route-status.small {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.route-error {
+  font-size: 13px;
+  color: #ffb3b3;
+}
+
+/* =========================
+   FOOTER NAV (si utilisé)
+   ========================= */
 .footer-nav {
   margin-top: auto;
   width: 100%;
@@ -68,4 +280,113 @@
 .footer-nav i {
   font-size: 24px;
   color: #fddc5c; /* Yellow icons like screenshot */
+}
+
+/* =====================================================
+   CLASSES SUPPLÉMENTAIRES POUR COLLER AVEC Home.jsx
+   ===================================================== */
+
+/* Bandeau utilisé dans certaines versions de Home.jsx */
+.selected-route-banner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 36, 61, 0.95);
+  color: #fddc5c;
+  padding: 6px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Conteneur de recherche utilisé par Home.jsx (From/To + bouton) */
+.search-card {
+  margin-top: 16px;
+  width: 90%;
+  max-width: 400px;
+  background: #0e243d;
+  border-radius: 24px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: white;
+  font-size: 16px;
+}
+
+/* On réutilise .search-row et .search-label déjà définis plus haut */
+
+/* Bouton "Go" dans la carte de recherche */
+.search-button {
+  background: #fddc5c;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #0e243d;
+  font-weight: 700;
+  align-self: flex-end;
+}
+
+.search-button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Liste de routes utilisée par Home.jsx */
+.routes-list {
+  margin-top: 8px;
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Variantes des cartes (classes sans les deux tirets, pour Home.jsx) */
+.route-card-balanced {
+  background: #c49c2f;
+  color: #0e243d;
+}
+
+.route-card-fastest {
+  background: #ffffff;
+  color: #0e243d;
+}
+
+.route-card-mostlit {
+  background: #12263c;
+  color: #fddc5c;
+}
+
+/* Bouton GO dans Home.jsx */
+.route-go-button {
+  background: #36b166;
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.route-go-button-active {
+  box-shadow: 0 0 0 3px rgba(54, 177, 102, 0.6);
+}
+
+/* Lignes de texte (durée, distance, ETA, light score) */
+.route-line {
+  margin: 2px 0;
+  font-size: 13px;
+}
+
+/* Message d'erreur global (Home.jsx) */
+.error-text {
+  color: #ffb3b3;
+  font-size: 13px;
+  margin-bottom: 6px;
 }

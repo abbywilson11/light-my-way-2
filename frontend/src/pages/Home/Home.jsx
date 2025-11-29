@@ -1,22 +1,185 @@
+import React, { useState } from "react";
 import "./Home.css";
+import { fetchRoutes } from "../../api/client";
+import RouteMap from "../../components/RouteMap.jsx";
 
 export default function Home() {
+  const [fromLocation, setFromLocation] = useState("uottawa, ottawa");
+  const [toLocation, setToLocation] = useState("rideau centre, ottawa");
+  const [routes, setRoutes] = useState([]);
+  const [selectedRouteId, setSelectedRouteId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const selectedRoute =
+    routes.find((r) => r.id === selectedRouteId) || routes[0] || null;
+
+  const handleSearch = async () => {
+    if (!fromLocation.trim() || !toLocation.trim()) return;
+
+    try {
+      setLoading(true);
+      setError("");
+      const data = await fetchRoutes(fromLocation, toLocation);
+
+      if (!data.routes || data.routes.length === 0) {
+        setRoutes([]);
+        setSelectedRouteId(null);
+        setError("No routes found. Try another destination.");
+        return;
+      }
+
+      setRoutes(data.routes);
+      setSelectedRouteId(data.routes[0].id);
+    } catch (err) {
+      console.error(err);
+      setError("Could not fetch routes. Please try again.");
+      setRoutes([]);
+      setSelectedRouteId(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatMinutes = (minutes) => {
+    const total = Math.round(minutes);
+    const h = Math.floor(total / 60);
+    const m = total % 60;
+    if (h <= 0) return `${m} min`;
+    return `${h} h ${m} min`;
+  };
+
+  const handleSelectRoute = (routeId) => {
+    setSelectedRouteId(routeId);
+  };
+
   return (
     <div className="home-page">
+      {/* ====== MAP + BADGES ====== */}
+      <div className="map-wrapper">
+        <div className="map-container">
+          {/* vraie carte Leaflet */}
+          <RouteMap routes={routes} selectedRouteId={selectedRouteId} />
 
-      {/* MAP SECTION */}
-      <div className="map-container">
-        <img src="/map-image.png" alt="map" /> 
-        {/* replace with your map component if needed */}
+          {/* Badges Fastest / Balanced / Most Lit */}
+          <div
+            className={
+              "map-badge map-badge--fastest" +
+              (selectedRouteId === "fastest" ? " map-badge--active" : "")
+            }
+          >
+            Fastest
+          </div>
+          <div
+            className={
+              "map-badge map-badge--balanced" +
+              (selectedRouteId === "balanced" ? " map-badge--active" : "")
+            }
+          >
+            Balanced
+          </div>
+          <div
+            className={
+              "map-badge map-badge--mostlit" +
+              (selectedRouteId === "most-lit" ? " map-badge--active" : "")
+            }
+          >
+            Most Lit
+          </div>
+
+          {/* Bandeau en bas avec la route sélectionnée */}
+          {selectedRoute && (
+            <div className="map-selected-banner">
+              <span className="map-selected-label">Selected route:</span>
+              <span className="map-selected-value">
+                {selectedRoute.label || selectedRoute.id}
+              </span>
+              <span className="map-selected-extra">
+                &nbsp;• {formatMinutes(selectedRoute.durationMinutes)} •{" "}
+                {selectedRoute.distanceKm.toFixed(2)} km
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* SEARCH BAR */}
+      {/* ====== FROM / TO SEARCH CARD ====== */}
       <div className="search-bar">
-        <i className="search-icon">🔍</i>
-        <input type="text" placeholder="Search map" />
-        <i className="mic-icon">🎤</i>
+        <div className="search-row">
+          <span className="search-label">From</span>
+          <input
+            type="text"
+            value={fromLocation}
+            onChange={(e) => setFromLocation(e.target.value)}
+            placeholder="Start location"
+          />
+        </div>
+        <div className="search-row">
+          <span className="search-label">To</span>
+          <input
+            type="text"
+            value={toLocation}
+            onChange={(e) => setToLocation(e.target.value)}
+            placeholder="Destination"
+          />
+        </div>
+        <button
+          className="go-button"
+          onClick={handleSearch}
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "Go"}
+        </button>
       </div>
 
+      {/* ====== DIRECTIONS + CARDS ====== */}
+      <div className="directions-section">
+        <h2 className="directions-title">Directions</h2>
+
+        {error && <div className="route-error">{error}</div>}
+
+        {routes.map((route) => {
+          const isSelected = route.id === selectedRouteId;
+          const eta = new Date(Date.now() + route.durationMinutes * 60 * 1000);
+          const etaStr = eta.toTimeString().slice(0, 5);
+
+          let cardClass = "route-card";
+          if (route.id === "balanced") cardClass += " route-card--balanced";
+          if (route.id === "fastest") cardClass += " route-card--fastest";
+          if (route.id === "most-lit") cardClass += " route-card--most-lit";
+          if (isSelected) cardClass += " route-card--selected";
+
+          return (
+            <div key={route.id} className={cardClass}>
+              <div className="route-card-header">
+                <div>
+                  <div className="route-name">{route.label}</div>
+                  <div className="route-subtitle">
+                    {formatMinutes(route.durationMinutes)} •{" "}
+                    {route.distanceKm.toFixed(2)} km
+                  </div>
+                </div>
+                <button
+                  className="route-go-btn"
+                  onClick={() => handleSelectRoute(route.id)}
+                >
+                  GO
+                </button>
+              </div>
+
+              <div className="route-details">
+                <p>
+                  <strong>ETA:</strong> {etaStr}
+                </p>
+                <p>
+                  <strong>Light score:</strong>{" "}
+                  {route.lightScore.toFixed(1)} / 10
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
