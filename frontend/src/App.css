@@ -31,3 +31,4 @@ html, body, #root {
   flex-direction: column;
   overflow-y: auto; /* prevents inner scrolling */
 }
+

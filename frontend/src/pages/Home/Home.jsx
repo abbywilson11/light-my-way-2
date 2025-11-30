@@ -4,8 +4,8 @@ import { fetchRoutes } from "../../api/client";
 import RouteMap from "../../components/RouteMap.jsx";
 
 export default function Home() {
-  const [fromLocation, setFromLocation] = useState("uottawa, ottawa");
-  const [toLocation, setToLocation] = useState("rideau centre, ottawa");
+  const [fromLocation, setFromLocation] = useState("");
+  const [toLocation, setToLocation] = useState("");
   const [routes, setRoutes] = useState([]);
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -111,7 +111,7 @@ export default function Home() {
             type="text"
             value={fromLocation}
             onChange={(e) => setFromLocation(e.target.value)}
-            placeholder="Start location"
+            placeholder="Enter Start Location"
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function Home() {
             type="text"
             value={toLocation}
             onChange={(e) => setToLocation(e.target.value)}
-            placeholder="Destination"
+            placeholder="Enter Destination"
           />
         </div>
 

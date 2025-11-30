@@ -1,6 +1,9 @@
 // frontend/src/components/RouteMap.jsx
 import React from "react";
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from "react-leaflet";
+import { FaMapMarkerAlt, FaFlagCheckered } from "react-icons/fa";
+import L from "leaflet";
+import ReactDOMServer from "react-dom/server";
 
 const DEFAULT_CENTER = [45.4215, -75.6972]; // Ottawa
 const DEFAULT_ZOOM = 13;
@@ -51,6 +54,23 @@ export default function RouteMap({ routes, selectedRouteId }) {
   const selectedRoute = hasRoutes
     ? routes.find((r) => r.id === selectedRouteId) || routes[0]
     : null;
+const startIcon = L.divIcon({
+  html: ReactDOMServer.renderToString(
+    <FaMapMarkerAlt size={24} color="#1d7cf2" /> // blue
+  ),
+  className: "custom-marker",
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+});
+
+const endIcon = L.divIcon({
+  html: ReactDOMServer.renderToString(
+    <FaFlagCheckered size={30} color="#e10b60ff" /> // gold
+  ),
+  className: "custom-marker",
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+});
 
   return (
 <MapContainer
@@ -92,17 +112,23 @@ export default function RouteMap({ routes, selectedRouteId }) {
       {/* Marqueur départ / arrivée de la route sélectionnée */}
       {selectedRoute && selectedRoute.path && selectedRoute.path.length > 0 && (
         <>
-          <Marker position={[selectedRoute.path[0].lat, selectedRoute.path[0].lng]}>
-            <Popup>Start</Popup>
-          </Marker>
-          <Marker
-            position={[
-              selectedRoute.path[selectedRoute.path.length - 1].lat,
-              selectedRoute.path[selectedRoute.path.length - 1].lng,
-            ]}
-          >
-            <Popup>End</Popup>
-          </Marker>
+         <Marker
+  position={[selectedRoute.path[0].lat, selectedRoute.path[0].lng]}
+  icon={startIcon}
+>
+  <Popup>Start</Popup>
+</Marker>
+
+<Marker
+  position={[
+    selectedRoute.path[selectedRoute.path.length - 1].lat,
+    selectedRoute.path[selectedRoute.path.length - 1].lng,
+  ]}
+  icon={endIcon}
+>
+  <Popup>End</Popup>
+</Marker>
+
         </>
       )}
     </MapContainer>
