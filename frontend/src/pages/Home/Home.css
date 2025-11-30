@@ -23,14 +23,13 @@
 }
 
 .map-container {
+  position: relative;
   width: 90%;
-  max-width: 600px;
-  height: 260px;
+  max-width: 400px;
+  height: 260px;     /* IMPORTANT — you must add this */
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  position: relative;
 }
 
 .map-container img {

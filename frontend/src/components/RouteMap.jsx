@@ -34,6 +34,18 @@ function FitBounds({ routes }) {
   return null;
 }
 
+function ForceMapResize() {
+  const map = useMap();
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);      // small delay ensures container finished layout
+  }, [map]);
+
+  return null;
+}
+
 export default function RouteMap({ routes, selectedRouteId }) {
   const hasRoutes = routes && routes.length > 0;
   const selectedRoute = hasRoutes
@@ -41,19 +53,22 @@ export default function RouteMap({ routes, selectedRouteId }) {
     : null;
 
   return (
-    <MapContainer
-      center={DEFAULT_CENTER}
-      zoom={DEFAULT_ZOOM}
-      style={{ height: "260px", width: "100%" }}
-      scrollWheelZoom={false}
-      zoomControl={false}
-    >
-      <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+<MapContainer
+  center={DEFAULT_CENTER}
+  zoom={DEFAULT_ZOOM}
+  style={{ height: "260px", width: "100%" }}
+  scrollWheelZoom={false}
+  zoomControl={false}
+>
+  {/* 👇 add this right after MapContainer opens */}
+  <ForceMapResize />
 
-      {hasRoutes && <FitBounds routes={routes} />}
+  <TileLayer
+    attribution='&copy; OpenStreetMap contributors'
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  />
+
+  {hasRoutes && <FitBounds routes={routes} />}
 
       {/* Tracés pour chaque route */}
       {hasRoutes &&

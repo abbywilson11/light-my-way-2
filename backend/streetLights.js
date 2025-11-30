@@ -12,7 +12,6 @@ let cachedStreetLights = [];
 
 /**
  * Charge le fichier GeoJSON de lampadaires au démarrage.
- * relativePath est en général "./data/street_lights.geojson"
  */
 export function loadStreetLights(relativePath = "./data/street_lights.geojson") {
   try {
@@ -28,7 +27,7 @@ export function loadStreetLights(relativePath = "./data/street_lights.geojson") 
       return cachedStreetLights;
     }
 
-    // On garde juste lat/lng
+    // Keep only lat/lng coordinates
     cachedStreetLights = geojson.features
       .map((f) => {
         const coords = f.geometry?.coordinates;
@@ -50,9 +49,6 @@ export function loadStreetLights(relativePath = "./data/street_lights.geojson") 
   }
 }
 
-/**
- * Permet à d'autres fichiers (index.js) de récupérer le cache.
- */
 export function getStreetLights() {
   return cachedStreetLights;
 }
@@ -61,9 +57,9 @@ export function getStreetLights() {
 // Helpers pour distance & comptage des lampadaires
 // ----------------------------------------------------
 
-// Distance en mètres entre deux points lat/lng (haversine)
+// Distance Haversine en mètres
 function haversineDistanceMeters(a, b) {
-  const R = 6371000; // rayon de la Terre
+  const R = 6371000;
   const toRad = (deg) => (deg * Math.PI) / 180;
 
   const dLat = toRad(b.lat - a.lat);
@@ -83,14 +79,13 @@ function haversineDistanceMeters(a, b) {
 }
 
 /**
- * Compte le nombre de lampadaires dans un rayon donné autour d'un point.
+ * Compte les lampadaires dans un rayon autour d'un point.
  */
 function countLightsNearPoint(point, lights, radiusMeters = 30) {
   let count = 0;
 
   for (const light of lights) {
-    const d = haversineDistanceMeters(point, light);
-    if (d <= radiusMeters) {
+    if (haversineDistanceMeters(point, light) <= radiusMeters) {
       count++;
     }
   }
@@ -99,31 +94,97 @@ function countLightsNearPoint(point, lights, radiusMeters = 30) {
 }
 
 /**
- * Calcule un lightScore sur 10 pour une route donnée.
- * route.path = tableau de { lat, lng }
+ * Trouve la distance au lampadaire le plus proche.
+ */
+function distanceToNearestLight(point, lights) {
+  let minDist = Infinity;
+  for (const light of lights) {
+    const d = haversineDistanceMeters(point, light);
+    if (d < minDist) minDist = d;
+  }
+  return minDist;
+}
+
+// ----------------------------------------------------
+// ADVANCED LIGHT SCORE 2.0
+// ----------------------------------------------------
+/**
+ * Calcule un score de luminosité réaliste (0–10)
+ * en combinant plusieurs facteurs:
+ *  - densité de lampadaires
+ *  - distance moyenne au lampadaire le plus proche
+ *  - zones "dark" (>80m sans lampadaire)
+ *  - intersections éclairées
+ *  - pénalités de routes rapides
  */
 export function computeLightScoreForRoute(route, lights) {
-  if (!route?.path || route.path.length === 0) {
-    return 5; // score neutre
-  }
-  if (!lights || lights.length === 0) {
-    // pas de données → on reste neutre aussi
-    return 5;
-  }
+  if (!route?.path || route.path.length === 0) return 5;
+  if (!lights || lights.length === 0) return 5;
 
+  const path = route.path;
+  const distanceKm = route.distanceKm || 1;
+
+  // -----------------------------
+  // 1. Light density (0–40 pts)
+  // -----------------------------
   let totalLights = 0;
-
-  for (const point of route.path) {
-    totalLights += countLightsNearPoint(point, lights, 30);
+  for (const p of path) {
+    totalLights += countLightsNearPoint(p, lights, 30);
   }
 
-  const avgLightsPerPoint = totalLights / route.path.length;
+  const lightsPerKm = totalLights / distanceKm;
+  const densityScore = Math.min(lightsPerKm / 10, 1) * 40;
 
-  // Normalisation : 0 lampadaires → 2/10, 10+ lampadaires → 10/10
-  const score = Math.max(
-    2,
-    Math.min(10, (avgLightsPerPoint / 10) * 8 + 2)
-  );
+  // -----------------------------
+  // 2. Average distance to nearest light (0–25 pts)
+  // -----------------------------
+  let totalNearestDist = 0;
+  for (const p of path) {
+    totalNearestDist += distanceToNearestLight(p, lights);
+  }
 
-  return score;
+  const avgDist = totalNearestDist / path.length;
+  const closenessScore = Math.max(0, (100 - avgDist) / 100) * 25;
+
+  // -----------------------------
+  // 3. Dark zone penalty (max -20)
+  // -----------------------------
+  let darkPenalty = 0;
+  for (const p of path) {
+    if (distanceToNearestLight(p, lights) > 80) {
+      darkPenalty += 2;
+    }
+  }
+  darkPenalty = Math.min(darkPenalty, 20);
+
+  // -----------------------------
+  // 4. Intersection bonus (0–10)
+  // -----------------------------
+  let intersectionLights = 0;
+  if (route.intersections) {
+    for (const inter of route.intersections) {
+      if (distanceToNearestLight(inter, lights) < 30) {
+        intersectionLights++;
+      }
+    }
+  }
+  const intersectionScore = Math.min(intersectionLights * 2, 10);
+
+  // -----------------------------
+  // 5. Speed / unsafe road penalty (0–5)
+  // -----------------------------
+  const speedPenalty = route.maxSpeed > 50 ? 5 : 0;
+
+  // -----------------------------
+  // Final score
+  // -----------------------------
+  const final =
+    densityScore +
+    closenessScore +
+    intersectionScore -
+    darkPenalty -
+    speedPenalty;
+
+  // Convert to 0–10 range
+  return Math.max(0, Math.min(final / 10, 10));
 }

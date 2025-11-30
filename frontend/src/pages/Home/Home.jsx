@@ -14,12 +14,23 @@ export default function Home() {
   const selectedRoute =
     routes.find((r) => r.id === selectedRouteId) || routes[0] || null;
 
+  // ===========================
+  // FETCH ROUTES
+  // ===========================
   const handleSearch = async () => {
     if (!fromLocation.trim() || !toLocation.trim()) return;
 
     try {
       setLoading(true);
       setError("");
+
+    console.log("DEBUG FRONTEND:", {
+    fromLocation,
+    toLocation,
+    fetchRoutesFunction: fetchRoutes.toString(),
+    });
+
+
       const data = await fetchRoutes(fromLocation, toLocation);
 
       if (!data.routes || data.routes.length === 0) {
@@ -55,39 +66,26 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      {/* ====== MAP + BADGES ====== */}
+
+      {/* ===========================
+          MAP + BADGES + BANNER
+      =========================== */}
       <div className="map-wrapper">
         <div className="map-container">
-          {/* vraie carte Leaflet */}
+
+          {/* MAP ITSELF */}
           <RouteMap routes={routes} selectedRouteId={selectedRouteId} />
 
-          {/* Badges Fastest / Balanced / Most Lit */}
-          <div
-            className={
-              "map-badge map-badge--fastest" +
-              (selectedRouteId === "fastest" ? " map-badge--active" : "")
-            }
-          >
-            Fastest
-          </div>
-          <div
-            className={
-              "map-badge map-badge--balanced" +
-              (selectedRouteId === "balanced" ? " map-badge--active" : "")
-            }
-          >
-            Balanced
-          </div>
-          <div
-            className={
-              "map-badge map-badge--mostlit" +
-              (selectedRouteId === "most-lit" ? " map-badge--active" : "")
-            }
-          >
-            Most Well Lit
-          </div>
+          {/* BADGES — only show after directions exist */}
+          {routes.length > 0 && (
+            <>
+              <div className="map-badge map-badge--fastest">Fastest</div>
+              <div className="map-badge map-badge--balanced">Balanced</div>
+              <div className="map-badge map-badge--mostlit">Most Well Lit</div>
+            </>
+          )}
 
-          {/* Bandeau en bas avec la route sélectionnée */}
+          {/* SELECTED ROUTE BANNER — also inside the map only */}
           {selectedRoute && (
             <div className="map-selected-banner">
               <span className="map-selected-label">Selected route:</span>
@@ -95,7 +93,7 @@ export default function Home() {
                 {selectedRoute.label || selectedRoute.id}
               </span>
               <span className="map-selected-extra">
-                &nbsp;• {formatMinutes(selectedRoute.durationMinutes)} •{" "}
+                • {formatMinutes(selectedRoute.durationMinutes)} •{" "}
                 {selectedRoute.distanceKm.toFixed(2)} km
               </span>
             </div>
@@ -103,7 +101,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ====== FROM / TO SEARCH CARD ====== */}
+      {/* ===========================
+          SEARCH BAR (FROM/TO)
+      =========================== */}
       <div className="search-bar">
         <div className="search-row">
           <span className="search-label">From</span>
@@ -114,6 +114,7 @@ export default function Home() {
             placeholder="Start location"
           />
         </div>
+
         <div className="search-row">
           <span className="search-label">To</span>
           <input
@@ -123,6 +124,7 @@ export default function Home() {
             placeholder="Destination"
           />
         </div>
+
         <button
           className="go-button"
           onClick={handleSearch}
@@ -132,7 +134,9 @@ export default function Home() {
         </button>
       </div>
 
-      {/* ====== DIRECTIONS + CARDS ====== */}
+      {/* ===========================
+          DIRECTIONS LIST
+      =========================== */}
       <div className="directions-section">
         <h2 className="directions-title">Directions</h2>
 
@@ -140,8 +144,9 @@ export default function Home() {
 
         {routes.map((route) => {
           const isSelected = route.id === selectedRouteId;
-          const eta = new Date(Date.now() + route.durationMinutes * 60 * 1000);
-          const etaStr = eta.toTimeString().slice(0, 5);
+          const eta = new Date(Date.now() + route.durationMinutes * 60000)
+            .toTimeString()
+            .slice(0, 5);
 
           let cardClass = "route-card";
           if (route.id === "balanced") cardClass += " route-card--balanced";
@@ -168,13 +173,8 @@ export default function Home() {
               </div>
 
               <div className="route-details">
-                <p>
-                  <strong>ETA:</strong> {etaStr}
-                </p>
-                <p>
-                  <strong>Light score:</strong>{" "}
-                  {route.lightScore.toFixed(1)} / 10
-                </p>
+                <p><strong>ETA:</strong> {eta}</p>
+                <p><strong>Light score:</strong> {route.lightScore.toFixed(1)} / 10</p>
               </div>
             </div>
           );
