@@ -1,6 +1,6 @@
 import React from "react";
 import "./Navbar.css";
-import logo from "../assets/LMW.jpeg"; // path to your logo image
+import logo from "../assets/LMW2.png"; // path to your logo image
 
 export default function Navbar() {
   return (
