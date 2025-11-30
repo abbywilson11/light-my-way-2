@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Safetytips.css";
+import "./SafetyTips.css";
 
 export default function SafetyTips() {
 
