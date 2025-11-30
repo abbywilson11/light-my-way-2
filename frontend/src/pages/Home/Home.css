@@ -6,6 +6,8 @@
   height: 50%;
   background-color: #003169; 
   padding-bottom: 80px; /* space for search bar */
+    margin-bottom: 80px; /* space for footer */
+
 }
 
 /* =========================
