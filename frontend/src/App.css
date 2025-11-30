@@ -2,12 +2,26 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
+
+.app-root {
+  width: 100%;
+  max-width: 100% !important;
+  margin: 0;
+  padding: 0;
+}
+
 
 .app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;  /* full screen */
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0px; /* keep your padding */
+  box-sizing: border-box;
 }
 
 /* The space between navbar and footer */

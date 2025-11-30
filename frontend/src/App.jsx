@@ -13,8 +13,9 @@ import "./App.css";
 export default function App() {
   return (
     <Router>
+      <div className="app-root">
+       <Navbar />
       <div className="app-layout">
-        <Navbar />
         <main className="app-main">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -24,6 +25,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+      </div>
       </div>
     </Router>
   );
