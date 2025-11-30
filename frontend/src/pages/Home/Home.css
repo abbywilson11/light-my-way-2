@@ -1,11 +1,11 @@
 /* PAGE BACKGROUND */
 .home-page {
-  background-color: #1d426d; /* Dark blue like screenshot */
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding-top: 80px; /* Space for navbar */
+  flex: 1;
+  height: 50%;
+  background-color: #003169; 
+  padding-bottom: 80px; /* space for search bar */
 }
 
 /* =========================

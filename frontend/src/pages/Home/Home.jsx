@@ -84,7 +84,7 @@ export default function Home() {
               (selectedRouteId === "most-lit" ? " map-badge--active" : "")
             }
           >
-            Most Lit
+            Most Well Lit
           </div>
 
           {/* Bandeau en bas avec la route sélectionnée */}

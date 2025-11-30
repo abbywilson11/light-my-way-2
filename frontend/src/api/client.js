@@ -27,22 +27,6 @@ export async function fetchRoutes(start, end) {
 }
 
 /**
- * Safety tips – utilisée dans SafetyTips.jsx
- */
-export async function fetchSafetyTips() {
-  const response = await fetch(`${API_BASE_URL}/api/safety-tips`);
-  return handleJsonResponse(response);
-}
-
-/**
- * Info page – utilisée dans Info.jsx
- */
-export async function fetchInfo() {
-  const response = await fetch(`${API_BASE_URL}/api/info`);
-  return handleJsonResponse(response);
-}
-
-/**
  * Feedback – utilisée dans SafetyTips.jsx
  * payload: { rating, comment, flags, routeId }
  */

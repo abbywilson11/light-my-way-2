@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaHome, FaInfoCircle, FaShieldAlt } from "react-icons/fa";
 import "./Footer.css";
 
 export default function Footer() {
@@ -7,18 +8,20 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      <div className="footer-left">
-        <button onClick={() => navigate("/Home")}>Home</button>
-      </div>
+      <button className="footer-btn" onClick={() => navigate("/Home")}>
+        <FaHome className="footer-icon" />
+        <span>Home</span>
+      </button>
 
-      <div className="footer-center">
-        <button onClick={() => navigate("/info")}>Info</button>
-      </div>
+      <button className="footer-btn" onClick={() => navigate("/info")}>
+        <FaInfoCircle className="footer-icon" />
+        <span>Info</span>
+      </button>
 
-      <div className="footer-right">
-        <button onClick={() => navigate("/safety")}>Safety Tips</button>
-      </div>
+      <button className="footer-btn" onClick={() => navigate("/safety")}>
+        <FaShieldAlt className="footer-icon" />
+        <span>Safety</span>
+      </button>
     </footer>
-
   );
 }

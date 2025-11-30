@@ -1,84 +1,30 @@
-// frontend/src/pages/Info/Info.jsx
-import React, { useEffect, useState } from "react";
-import { fetchInfo } from "../../api/client"; // ✅ garde ça
+import React from "react";
+import "./Info.css"; 
 
-export default function Info() {
-  const [info, setInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function loadInfo() {
-      try {
-        setLoading(true);
-        setError("");
-        const data = await fetchInfo();
-        setInfo(data);
-      } catch (err) {
-        console.error(err);
-        setError("Could not load info. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadInfo();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="info-container">
-        <h1>Info</h1>
-        <p>Loading…</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="info-container">
-        <h1>Info</h1>
-        <p style={{ color: "salmon" }}>{error}</p>
-      </div>
-    );
-  }
-
-  if (!info) {
-    return (
-      <div className="info-container">
-        <h1>Info</h1>
-        <p>No info available.</p>
-      </div>
-    );
-  }
-
+export default function InfoPage() {
   return (
     <div className="info-container">
-      <h1>{info.title || "How we calculate lighting"}</h1>
+      <h1 className="info-title">Welcome to the Information Page</h1>
 
-      {info.description && <p>{info.description}</p>}
+      <div className="info-section">
+        <h2 className="section-title">About</h2>
+        <p className="section-text">
+          Light My Way estimates how well-lit a route is by combining map directions with public 
+          data on streetlight locations and brightness levels. The app then suggests routes that maximize streetlight exposure,
 
-      {Array.isArray(info.steps) && info.steps.length > 0 && (
-        <>
-          <h2>How it works</h2>
-          <ul>
-            {info.steps.map((step, idx) => (
-              <li key={idx}>{step}</li>
-            ))}
-          </ul>
-        </>
-      )}
+        </p>
+      </div>
 
-      {Array.isArray(info.limitations) && info.limitations.length > 0 && (
-        <>
-          <h2>Limitations</h2>
-          <ul>
-            {info.limitations.map((lim, idx) => (
-              <li key={idx}>{lim}</li>
-            ))}
-          </ul>
-        </>
-      )}
+      <div className="info-section">
+        <h2 className="section-title">How It Works</h2>
+        <p className="section-text">
+          1. We retrieve candidate walking routes between the start and end points using a map API (Google Directions).<br />
+          2. For each route, we look up streetlight locations in public open data (e.g., City of Ottawa).<br />
+          3. We analyze each route segment to calculate a "light score" based on the density and brightness of nearby streetlights.<br />
+          4. Finally, we present route options such as "fastest," "balanced," and "most well-lit" to the user.
+        </p>
+      </div>
+
     </div>
   );
 }

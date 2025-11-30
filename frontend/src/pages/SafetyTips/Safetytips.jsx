@@ -1,35 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { fetchSafetyTips, sendFeedback } from "../../api/client";
+import React, { useState } from "react";
+import "./Safetytips.css";
 
 export default function SafetyTips() {
-  const [tips, setTips] = useState([]);
-  const [loadingTips, setLoadingTips] = useState(true);
-  const [tipsError, setTipsError] = useState(null);
 
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("");
   const [sending, setSending] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState(null);
   const [feedbackError, setFeedbackError] = useState(null);
-
-  // Charger les safety tips depuis le backend
-  useEffect(() => {
-    async function loadTips() {
-      try {
-        setLoadingTips(true);
-        setTipsError(null);
-        const data = await fetchSafetyTips();
-        setTips(data.tips || []);
-      } catch (err) {
-        console.error(err);
-        setTipsError("Could not load safety tips.");
-      } finally {
-        setLoadingTips(false);
-      }
-    }
-
-    loadTips();
-  }, []);
 
   // Soumission du feedback
   async function handleSubmit(e) {
@@ -45,12 +23,15 @@ export default function SafetyTips() {
 
     try {
       setSending(true);
-      await sendFeedback({
-        rating: numericRating,
         comment,
-        flags: [],
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: numericRating,
+          comment,
+        }),
       });
-
       setFeedbackMessage("Thank you for your feedback!");
       setRating("");
       setComment("");
@@ -63,35 +44,50 @@ export default function SafetyTips() {
   }
 
   return (
-    <div
-      className="safetytips-container"
-      style={{ padding: "16px", color: "white" }}
-    >
-      <h1>Safety tips</h1>
+    <div className="safety-container">
+      <h1 className="safety-title">Welcome to the Safety Page</h1>
+      <p className="safety-subheading">
+        Learn about ways to stay safe walking alone at night and provide feedback on your experience using our route planner. 
+      </p>
 
-      {/* Liste des tips */}
-      {loadingTips && <p>Loading safety tips...</p>}
-      {tipsError && <p style={{ color: "salmon" }}>{tipsError}</p>}
+      {/* Tips Section */}
+      <div className="safety-section">
+        <h2 className="section-title">Tips</h2>
 
-      {!loadingTips && !tipsError && (
-        <ul style={{ listStyle: "none", padding: 0, marginTop: "12px" }}>
-          {tips.map((tip) => (
-            <li
-              key={tip.id}
-              style={{
-                background: "#0e243d",
-                padding: "12px 14px",
-                borderRadius: "10px",
-                marginBottom: "8px",
-              }}
-            >
-              <strong>{tip.category}</strong>
-              <br />
-              <span>{tip.text}</span>
-            </li>
-          ))}
+        <h3 className="section-subtitle">Stay Alert</h3>
+        <ul className="section-text">
+          <li>Keep your head up</li>
+          <li>Make eye contact with others</li>
+          <li>Don’t wear headphones</li>
+          <li>Avoid hoodies that block peripheral vision</li>
         </ul>
-      )}
+
+        <h3 className="section-subtitle">Plan Your Route</h3>
+        <ul className="section-text">
+          <li>Check your route ahead of time</li>
+          <li>Tell someone when you expect to return</li>
+          <li>Wear reflective clothing for visibility</li>
+        </ul>
+      </div>
+
+      {/* Resources Section */}
+      <div className="safety-section">
+        <h2 className="section-title">External Resources</h2>
+        <ul className="section-text">
+          <li>Emergency Line: 9-1-1</li>
+          <li>Non-Emergency (Suspicious Activity): 613-236-1222</li>
+          <li>City of Ottawa Emergency Info: Community Planning</li>
+          <li>Women & Children Shelter (Domestic Abuse): 2-1-1</li>
+          <li>Indigenous Crisis Line: 1-855-242-3310</li>
+        </ul>
+
+        <h3 className="section-subtitle">Campus Emergency Lines</h3>
+        <ul className="section-text">
+          <li>uOttawa: 613-562-5411</li>
+          <li>Carleton: 613-520-4444</li>
+          <li>Algonquin College: EXT. 5000</li>
+        </ul>
+      </div>
 
       {/* Formulaire de feedback */}
       <div

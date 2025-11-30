@@ -139,10 +139,11 @@ function pickRouteVariants(enrichedRoutes) {
     },
     {
       id: "most-lit",
-      label: "Most lit route",
+      label: "Most Well Lit route",
       ...mostLit,
     },
   ];
+      console.log("DEBUG BACKEND VARIANTS:", result);
 
   // enlever raw avant d’envoyer au frontend
   return result.map(({ raw, ...clean }) => clean);
