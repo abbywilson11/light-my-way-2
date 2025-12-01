@@ -111,7 +111,7 @@ export default function Home() {
             type="text"
             value={fromLocation}
             onChange={(e) => setFromLocation(e.target.value)}
-            placeholder="Enter Start Location"
+            placeholder="address, city"
           />
         </div>
 
@@ -121,7 +121,7 @@ export default function Home() {
             type="text"
             value={toLocation}
             onChange={(e) => setToLocation(e.target.value)}
-            placeholder="Enter Destination"
+            placeholder="address, city"
           />
         </div>
 
