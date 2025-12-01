@@ -92,14 +92,14 @@ export default function SafetyTips() {
       {/* Formulaire de feedback */}
       <div
         style={{
-          marginTop: "24px",
+          marginTop: "15px",
           padding: "16px",
           background: "#0e243d",
           borderRadius: "12px",
         }}
       >
-        <h2 style={{ marginBottom: "8px" }}>Give us your feedback</h2>
-        <p style={{ fontSize: "14px" }}>
+        <h2 style={{ marginBottom: "8px" }}>We want to hear your feedback!</h2>
+        <p style={{ fontSize: "18px" }}>
           Rate how safe your last walk felt (0–5) and add a short comment if you
           want.
         </p>
