@@ -18,8 +18,8 @@ export default function InfoPage() {
       <div className="info-section">
         <h2 className="section-title">How It Works</h2>
         <p className="section-text">
-          1. We retrieve candidate walking routes between the start and end points using a map API (Google Directions).<br />
-          2. For each route, we look up streetlight locations in public open data (e.g., City of Ottawa).<br />
+          1. We retrieve potential walking routes between the start and end points using a map API (Google Directions).<br />
+          2. For each route, we look up streetlight locations in public open data from the City of Ottawa.<br />
           3. We analyze each route segment to calculate a "light score" based on the density and brightness of nearby streetlights.<br />
           4. Finally, we present route options such as "fastest," "balanced," and "most well-lit" to the user.
         </p>
